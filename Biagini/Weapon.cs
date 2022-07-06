@@ -1,157 +1,65 @@
 using System;
-using System.Threading;
 
-public abstract class Weapon
+namespace OOP21MtlShot.Model.Weapon
 {
-    public string Name { get; }
-    public int MagCapacity { get; }
-    public int BulletsInMag { get; set; }
-    public int DamagePerBullet { get; set; }
-    public int FireRate { get; }
-    public int ReloadTime { get; }
-    public double Accuracy { get; }
-	
-    public Test(readonly string Name, readonly int MagCapacity, readonly int DamagePerBullet, readonly int FireRate, readonly int ReloadTime, readonly double Accuracy)
+    public abstract class Weapon
     {
-        this.Name = Name;
-        this.MagCapacity = MagCapacity;
-        this.DamagePerBullet = DamagePerBullet;
-        this.FireRate = FireRate;
-        this.ReloadTime = ReloadTime;
-        this.Accuracy = Accuracy;
-		
-        this.BulletsInMag = this.MagCapacity;
-    }
-	
-    public void Reload()
-    {
-        this.BulletsInMag = this.MagCapacity;
-    }
-	
-    public void Shoot()
-    {
-        if (this.BulletsInMag != 0)
+        public string Name { get; }
+        public int MagCapacity { get; }
+        public int BulletsInMag { get; private set; }
+        public int DamagePerBullet { get; set; }
+        public int FireRate { get; }
+        public int ReloadTime { get; }
+        public double Accuracy { get; }
+
+        public Weapon(string name, int magCapacity, int damagePerBullet, int fireRate, int reloadTime, double accuracy)
         {
-            this.BulletsInMag--;
+            this.Name = name;
+            this.MagCapacity = magCapacity;
+            this.DamagePerBullet = damagePerBullet;
+            this.FireRate = fireRate;
+            this.ReloadTime = reloadTime;
+            this.Accuracy = accuracy;
+            this.BulletsInMag = this.MagCapacity;
         }
-    }
-	
-    public override int GetHashCode()
-    {
-        HashCode.Combine(Name, MagCapacity, BulletsInMag, DamagePerBullet, FireRate, ReloadTime, Accuracy);
-    }
-	
-    public override bool Equals(Object obj)
-    {
-        if ((obj == null) || ! this.GetType().Equals(obj.GetType()))
+
+        public void Reload()
         {
-            return false;
+            this.BulletsInMag = this.MagCapacity;
         }
-        else {
-            Weapon p = (Weapon) obj;
-            return (Name == w.Name) && (MagCapacity == w.MagCapacity) && (BulletsInMag == w.BulletsInMag) && (DamagePerBullet == w.DamagePerBullet) && (DamagePerBullet == w.DamagePerBullet);
+
+        public void Shoot()
+        {
+            if (this.BulletsInMag != 0)
+            {
+                this.BulletsInMag--;
+            }
         }
-    }
-	
-}
 
-
-
-
-
-package model.weapons;
-
-import java.util.Objects;
-
-/**
- * Weapon class models an infinite-bullets generic weapon.
- * 
- */
-public abstract class Weapon {
-	
-    private final string Name;
-    private final int MagCapacity;
-    private int BulletsInMag;
-    private int DamagePerBullet;
-    private final int FireRate;
-    private final int ReloadTime;
-    private final double Accuracy;
-
-    public Weapon(final string Name, final int MagCapacity, final int DamagePerBullet, final int FireRate,
-        final int ReloadTime, final double Accuracy) {
-        this.Name = Name;
-        this.MagCapacity = MagCapacity;
-        this.DamagePerBullet = DamagePerBullet;
-        this.FireRate = FireRate;
-        this.ReloadTime = ReloadTime;
-        this.Accuracy = Accuracy;
-		
-        this.BulletsInMag = this.MagCapacity;
-    }
-	
-    public void reload() {
-       this.BulletsInMag = this.MagCapacity;
-    }
-
-    public void shoot() {
-        if (this.BulletsInMag != 0) {
-           this.BulletsInMag--;
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Name, this.MagCapacity, this.BulletsInMag,
+                this.DamagePerBullet, this.FireRate, this.ReloadTime, this.Accuracy);
         }
-    }
 
-     public string getName() {
-       return Name;
-    }
-
-    public void setDamagePerBullet(final int DamagePerBullet) {
-        this.DamagePerBullet = DamagePerBullet;
-    }
-
-    
-    public int getMagCapacity() {
-        return MagCapacity;
-    }
-
-    public int getBulletsInMag() {
-       return BulletsInMag;
-    }
-
-    public int getDamagePerBullet() {
-        return DamagePerBullet;
-    }
-
-    public int getFireRate() {
-        return FireRate;
-    }
-
-    public int getReloadTime() {
-       return ReloadTime;
-    }
-
-    public double getAccuracy() {
-       return Accuracy;
-    }
-
-    @Override
-    public int hashCode() {
-       return Objects.hash(Accuracy, BulletsInMag, DamagePerBullet, FireRate, MagCapacity, Name, ReloadTime);
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is Weapon))
+            {
+                return false;
+            }
+            else
+            {
+                Weapon w = (Weapon)obj;
+                return
+                    this.Name == w.Name &&
+                    this.Accuracy == w.Accuracy &&
+                    this.DamagePerBullet == w.DamagePerBullet &&
+                    this.FireRate == w.FireRate &&
+                    this.MagCapacity == w.MagCapacity &&
+                    this.ReloadTime == this.ReloadTime;
+            }
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Weapon other = (Weapon) obj;
-        return Double.doubleToLongBits(Accuracy) == Double.doubleToLongBits(other.Accuracy)
-                && DamagePerBullet == other.DamagePerBullet && FireRate == other.FireRate
-                && MagCapacity == other.MagCapacity && Objects.equals(Name, other.Name)
-                && ReloadTime == other.ReloadTime;
+
     }
 }

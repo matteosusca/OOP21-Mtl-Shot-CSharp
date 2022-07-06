@@ -1,91 +1,97 @@
+using OOP21MtlShot.Dummy;
 using System;
-using System.Threading;
 
-using util.Vector2D;
-using util.direction.DirectionHorizontal;
-using util.direction.DirectionVertical;
+namespace OOP21MtlShot.Model.Weapons
+{
+    public class Bullet : Entity
+    {
+        private const double DefaultSpeed = 0.3;
+        private const double DefaultHitboxSize = 0.1;
+        private const int AngleRight = 0;
+        private const int AngleUp = 90;
+        private const int AngleLeft = 180;
+        private const int AngleDown = 270;
+        private const double AccuracyAmplifier = 8.0;
 
-using System.Random;
-using System.Math;
+        private bool _hit;
+        private readonly double _cos;
+        private readonly double _sin;
 
-using model.Entity;
-using model.character.Character;
-using model.character.tools.Aim;
+        public Character Owner { get; }
+        public Aim Aim { get; }
+        public double Speed { get; }
+        public int Damage { get; }
 
-public class Bullet : Entity {
+        public Bullet(Character Owner) :
+            base(new Vector2D(Owner.Position.X + Owner.Hitbox.Y / 2, Owner.Position.Y + Owner.Hitbox.Y / 2),
+                new Vector2D(DefaultHitboxSize, DefaultHitboxSize))
+        {
+            this.Owner = this.Owner;
+            this.Aim = this.Owner.Aim;
+            this.Speed = Bullet.DefaultSpeed;
+            this._hit = false;
+            this.Damage = this.Owner.Weapon.DamagePerBullet;
 
-    private static readonly double DefaultSpeed = 0.3;
-    private static readonly double DefaultHitboxSize = 0.1;
-    private static readonly int AngleRight = 0;
-    private static readonly int AngleUp = 90;
-    private static readonly int AngleLeft = 180;
-    private static readonly int AngleDown = 270;
-    private static readonly double AccuracyAmplifier = 8.0;
+            Random r = new Random();
+            double angleInterval = 1 / Owner.Weapon.Accuracy;
+            double angle = AccuracyAmplifier * angleInterval * (r.NextDouble() - 0.5);
 
-    public Character Owner { get; }
-    public Aim AimOBJ { get; }
-    public double Speed { get; }
-    public int Damage { get; }
-    public bool Hit;
-    public double Cos { get; }
-    public double Sin { get; }
+            (DirectionHorizontal X, DirectionVertical Y) = this.Aim.Direction;
+            if (Y is DirectionVertical.Up)
+            {
+                angle += AngleUp;
+            }
+            else if (Y is DirectionVertical.Down)
+            {
+                angle += AngleDown;
+            }
+            else if (X is DirectionHorizontal.Left)
+            {
+                angle += AngleLeft;
+            }
+            else if (X is DirectionHorizontal.Right)
+            {
+                angle += AngleRight;
+            }
 
-    public Bullet(readonly Character Owner)
-	{
-        base(new Vector2D(Owner.GetPosition().GetX() + Owner.GetHitbox().GetX() / 2,
-                Owner.GetPosition().GetY() + Owner.GetHitbox().GetY() / 2),
-                new Vector2D(DefaultHitboxSize, DefaultHitboxSize));
-        this.Owner = Owner;
-        this.AimOBJ = Owner.GetAim();
-        this.Speed = DefaultSpeed;
-        this.Hit = false;
-        this.Damage = Owner.getWeapon().GetDamagePerBullet();
-
-        readonly var r = new Random();
-        readonly double angleInterval = 1 / ((Owner.getWeapon().getAccuracy()));
-        double angle = AccuracyAmplifier * angleInterval * (r.nextDouble() - 0.5);
-
-        if (this.AimOBJ.getDirection().getY().equals(DirectionVertical.UP)) {
-            angle += AngleUp;
-        } else if (this.AimOBJ.getDirection().getY().equals(DirectionVertical.DOWN)) {
-            angle += AngleDown;
-        } else if (this.AimOBJ.getDirection().getX().equals(DirectionHorizontal.LEFT)) {
-            angle += AngleLeft;
-        } else if (this.AimOBJ.getDirection().getX().equals(DirectionHorizontal.RIGHT)) {
-            angle += AngleRight;
+            this._sin = Math.Sin(this.DegreesToRadians(angle));
+            this._cos = Math.Cos(this.DegreesToRadians(angle));
         }
 
-        this.Sin = Math.Sin(DegreesToRadians(angle));
-        this.Cos = Math.Cos(DegreesToRadians(angle));
-    }
-	
-    public void Tick()
-	{
-        base.SetPosition(base.GetPosition().GetX() + this.Speed * this.Cos,
-                base.GetPosition().GetY() - this.Speed * this.Sin);
-    }
-	
-    public bool HasHit() => Hit;
-
-    public void HitSomething()
-	{
-        this.Hit = true;
-    }
-	
-	private double DegreesToRadians(readonly double val) => (Math.PI / 180) * val;
-
-    public override string ToString()
-	{
-        return "Bullet [position=" + base.GetPosition() + ", AimOBJ=" + AimOBJ + ", Speed=" + Speed + ", Damage=" + Damage
-                + "]";
-    }
-
-    public override bool IsColliding(readonly Entity entity)
-	{
-        if (entity.equals(this.Owner)) {
-            return false;
+        public void Tick()
+        {
+            base.SetPosition(base.GetPosition().X + this.Speed * this._cos,
+                    base.GetPosition().Y - this.Speed * this._sin);
         }
-        return super.isColliding(entity);
-    }
 
+        public bool HasHit()
+        {
+            return this._hit;
+        }
+
+        public void HitSomething()
+        {
+            this._hit = true;
+        }
+
+        private double DegreesToRadians(double val)
+        {
+            return (Math.PI / 180) * val;
+        }
+
+        public override string ToString()
+        {
+            return "Bullet [position=" + base.GetPosition() + ", AimOBJ=" + this.Aim + ", Speed=" + this.Speed + ", Damage=" + this.Damage + "]";
+        }
+
+        public override bool IsColliding(Entity entity)
+        {
+            if (entity.Equals(this.Owner))
+            {
+                return false;
+            }
+            return base.IsColliding(entity);
+        }
+
+    }
 }

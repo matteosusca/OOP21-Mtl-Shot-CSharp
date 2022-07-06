@@ -1,20 +1,16 @@
-using System;
-using System.Threading;
-
-using model.weapons.Weapon;
-
-public class Flatline : Weapon
+namespace OOP21MtlShot.Model.Weapon
 {
+    public class Flatline : Weapon
+    {
+        private const string FlatlineName = "Flatline";
+        private const int FlatlineMagCapacity = 25;
+        private const int FlatlineDamagePerBullet = 6;
+        private const int FlatlineFireRate = 13;
+        private const int FlatlineReloadTime = 100;
+        private const double FlatlineAccuracy = 0.8;
 
-    private static const int MagCapacity = 25;
-    private static const int DamagePerBullet = 6;
-    private static const int FireRate = 13;
-    private static const int ReloadTime = 100;
-    private static const double Accuracy = 0.8;
-
-    public Flatline() : base("Flatline", MagCapacity, DamagePerBullet, FireRate, ReloadTime, Accuracy)
-	{
-        
+        public Flatline() :
+            base(FlatlineName, FlatlineMagCapacity, FlatlineDamagePerBullet, FlatlineFireRate, FlatlineReloadTime, FlatlineAccuracy)
+        { }
     }
-
 }

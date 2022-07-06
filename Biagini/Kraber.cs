@@ -1,20 +1,16 @@
-using System;
-using System.Threading;
-
-using model.weapons.Weapon;
+using OOP21MtlShot.Model.Weapon;
 
 public class Kraber : Weapon
 {
+    private const string KraberName = "Kraber";
+    private const int KraberMagCapacity = 5;
+    private const int KraberDamagePerBullet = 100;
+    private const int KraberFireRate = 100;
+    private const int KraberReloadTime = 150;
+    private const double KraberAccuracy = 50.0;
 
-    private static const int MagCapacity = 5;
-    private static const int DamagePerBullet = 100;
-    private static const int FireRate = 100;
-    private static const int ReloadTime = 150;
-    private static const double Accuracy = 50.0;
-
-    public Kraber() : base("Kraber", MagCapacity, DamagePerBullet, FireRate, ReloadTime, Accuracy)
-	{
-        
-    }
+    public Kraber() :
+        base(KraberName, KraberMagCapacity, KraberDamagePerBullet, KraberFireRate, KraberReloadTime, KraberAccuracy)
+    { }
 
 }
