@@ -1,6 +1,0 @@
-﻿interface ISimpleBot
-{
-    void controllerTick();
-    void move();
-    void fire();
-}
